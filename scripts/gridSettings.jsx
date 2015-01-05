@@ -30,7 +30,7 @@ var GridSettings = React.createClass({
     },
     handleChange: function(event){
         var dataName = '';
-        if(event.target.hasOwnProperty('dataset')){
+        if(event.target.dataset){
             dataName = event.target.dataset.name;
         } else {
             dataName = event.target.getAttribute('data-name');

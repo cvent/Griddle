@@ -20,7 +20,7 @@ var GridTitle = React.createClass({
     },
     sort: function(event){
         var dataTitle = '';
-        if(event.target.hasOwnProperty('dataset')){
+        if(event.target.dataset){
             dataTitle = event.target.dataset.title;
         } else {
             dataTitle = event.target.getAttribute('data-title');

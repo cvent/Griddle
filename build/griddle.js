@@ -74,7 +74,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var CustomPaginationContainer = __webpack_require__(10);
 	var _ = __webpack_require__(2);
 
-	var Griddle = React.createClass({displayName: 'Griddle',
+	var Griddle = React.createClass({displayName: "Griddle",
 	    getDefaultProps: function() {
 	        return{
 	            "columns": [],
@@ -577,7 +577,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var GridRowContainer = __webpack_require__(11);
 	var _ = __webpack_require__(2);
 
-	var GridBody = React.createClass({displayName: 'GridBody',
+	var GridBody = React.createClass({displayName: "GridBody",
 	  getDefaultProps: function(){
 	    return{
 	      "data": [],
@@ -631,7 +631,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	*/
 	var React = __webpack_require__(1);
 
-	var GridFilter = React.createClass({displayName: 'GridFilter',
+	var GridFilter = React.createClass({displayName: "GridFilter",
 	    getDefaultProps: function(){
 	      return {
 	        "placeholderText": ""
@@ -664,7 +664,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(1);
 
 	//needs props maxPage, currentPage, nextFunction, prevFunction
-	var GridPagination = React.createClass({displayName: 'GridPagination',
+	var GridPagination = React.createClass({displayName: "GridPagination",
 	    getDefaultProps: function(){
 	        return{
 	            "maxPage": 0,
@@ -727,7 +727,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(1);
 	var _ = __webpack_require__(2);
 
-	var GridSettings = React.createClass({displayName: 'GridSettings',
+	var GridSettings = React.createClass({displayName: "GridSettings",
 	    getDefaultProps: function(){
 	        return {
 	            "columns": [],
@@ -746,12 +746,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.props.setPageSize(value);
 	    },
 	    handleChange: function(event){
-	        if(event.target.checked === true && _.contains(this.props.selectedColumns, event.target.dataset.name) === false){
-	            this.props.selectedColumns.push(event.target.dataset.name);
+	        var dataName = '';
+	        if(event.target.dataset){
+	            dataName = event.target.dataset.name;
+	        } else {
+	            dataName = event.target.getAttribute('data-name');
+	        }
+	        if(event.target.checked === true && _.contains(this.props.selectedColumns, dataName) === false){
+	            this.props.selectedColumns.push(dataName);
 	            this.props.setColumns(this.props.selectedColumns);
 	        } else {
 	            /* redraw with the selected columns minus the one just unchecked */
-	            this.props.setColumns(_.without(this.props.selectedColumns, event.target.dataset.name));
+	            this.props.setColumns(_.without(this.props.selectedColumns, dataName));
 	        }
 	    },
 	    render: function(){
@@ -765,9 +771,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                //check column metadata -- if this one is locked make it disabled and don't put an onChange event
 	                var meta  = _.findWhere(that.props.columnMetadata, {columnName: col});
 	                if(typeof meta !== "undefined" && meta != null && meta.locked){
-	                    return React.createElement("div", {className: "column checkbox"}, React.createElement("label", null, React.createElement("input", {type: "checkbox", disabled: true, name: "check", checked: checked, 'data-name': col}), col))
+	                    return React.createElement("div", {className: "column checkbox"}, React.createElement("label", null, React.createElement("input", {type: "checkbox", disabled: true, name: "check", checked: checked, "data-name": col}), col))
 	                }
-	                return React.createElement("div", {className: "column checkbox"}, React.createElement("label", null, React.createElement("input", {type: "checkbox", name: "check", onChange: that.handleChange, checked: checked, 'data-name': col}), col))
+	                return React.createElement("div", {className: "column checkbox"}, React.createElement("label", null, React.createElement("input", {type: "checkbox", name: "check", onChange: that.handleChange, checked: checked, "data-name": col}), col))
 	            });
 	        }
 
@@ -817,7 +823,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(1);
 	var _ = __webpack_require__(2);
 
-	var GridTitle = React.createClass({displayName: 'GridTitle',
+	var GridTitle = React.createClass({displayName: "GridTitle",
 	    getDefaultProps: function(){
 	        return {
 	           "columns":[],
@@ -826,7 +832,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    },
 	    sort: function(event){
-	        this.props.changeSort(event.target.dataset.title);
+	        var dataTitle = '';
+	        if(event.target.dataset){
+	            dataTitle = event.target.dataset.title;
+	        } else {
+	            dataTitle = event.target.getAttribute('data-title');
+	        }
+	        this.props.changeSort(dataTitle);
 	    },
 	    render: function(){
 	        var that = this;
@@ -849,7 +861,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	              }
 	            }
 
-	            return (React.createElement("th", {onClick: that.sort, 'data-title': col, className: columnSort, key: displayName}, displayName));
+	            return (React.createElement("th", {onClick: that.sort, "data-title": col, className: columnSort, key: displayName}, displayName));
 	        });
 
 	        return(
@@ -880,7 +892,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	*/
 	var React = __webpack_require__(1);
 
-	var GridNoData = React.createClass({displayName: 'GridNoData',
+	var GridNoData = React.createClass({displayName: "GridNoData",
 	    getDefaultProps: function(){
 	        return {
 	            "noDataMessage": "No Data"
@@ -913,7 +925,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	*/
 	var React = __webpack_require__(1);
 
-	var CustomFormatContainer = React.createClass({displayName: 'CustomFormatContainer',
+	var CustomFormatContainer = React.createClass({displayName: "CustomFormatContainer",
 	  getDefaultProps: function(){
 	    return{
 	      "data": [],
@@ -960,7 +972,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	*/
 	var React = __webpack_require__(1);
 
-	var CustomPaginationContainer = React.createClass({displayName: 'CustomPaginationContainer',
+	var CustomPaginationContainer = React.createClass({displayName: "CustomPaginationContainer",
 	  getDefaultProps: function(){
 	    return{
 	      "maxPage": 0,
@@ -1001,7 +1013,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(1);
 	var GridRow = __webpack_require__(12);
 
-	var GridRowContainer = React.createClass({displayName: 'GridRowContainer',
+	var GridRowContainer = React.createClass({displayName: "GridRowContainer",
 	    getInitialState: function(){
 	        return {
 	           "data": {
@@ -1061,7 +1073,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(1);
 	var _ = __webpack_require__(2);
 
-	var GridRow = React.createClass({displayName: 'GridRow',
+	var GridRow = React.createClass({displayName: "GridRow",
 	    getDefaultProps: function(){
 	      return {
 	        "isChildRow": false,
