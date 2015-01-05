@@ -16,12 +16,35 @@ module.exports = function(grunt) {
       server: {
         url: 'http://localhost:<%= connect.server.options.port %>/index.html'
       }
+    },
+    react: {
+      dynamic_mappings: {
+        files: [
+        {
+          expand: true,
+          cwd: 'scripts/',
+          src: ['**/*.jsx'],
+          dest: 'modules/',
+          ext: '.jsx.js'
+        }
+      ]
     }
+  },
+  jshint: {
+    all: {
+      src: ['Gruntfile.js', 'scripts/**/*.jsx', 'scripts/**/*.js'],
+      options: {
+        jshintrc: '.jshintrc'
+      }
+    }
+  }
   });
 
   grunt.loadNpmTasks('grunt-open');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-react');
+  grunt.loadNpmTasks('grunt-jsxhint');
 
   grunt.registerTask('serve', function (target) {
     grunt.task.run([

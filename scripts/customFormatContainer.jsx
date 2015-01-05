@@ -7,7 +7,7 @@
 
    See License / Disclaimer https://raw.githubusercontent.com/DynamicTyped/Griddle/master/LICENSE
 */
-var React = require('react/addons');
+var React = require('react');
 
 var CustomFormatContainer = React.createClass({
   getDefaultProps: function(){
@@ -27,7 +27,7 @@ var CustomFormatContainer = React.createClass({
     }
 
     var nodes = this.props.data.map(function(row, index){
-        return <that.props.customFormat data={row} metadataColumns={that.props.metadataColumns} />
+        return <that.props.customFormat data={row} metadataColumns={that.props.metadataColumns} key={index}/>
     });
 
     return (

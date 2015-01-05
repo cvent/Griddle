@@ -7,7 +7,7 @@
 
    See License / Disclaimer https://raw.githubusercontent.com/DynamicTyped/Griddle/master/LICENSE
 */
-var React = require('react/addons');
+var React = require('react');
 var GridBody = require('./gridBody.jsx');
 var GridFilter = require('./gridFilter.jsx');
 var GridPagination = require('./gridPagination.jsx');
@@ -27,6 +27,7 @@ var Griddle = React.createClass({
             "results": [], // Used if all results are already loaded.
             "getExternalResults": null, // Used if obtaining results from an API, etc.
             "initialSort": "",
+            "initialSortAscending": true,
             "gridClassName":"",
             "tableClassName":"",
             "customFormatClassName":"",
@@ -51,51 +52,49 @@ var Griddle = React.createClass({
             "noDataMessage":"There is no data to display.",
             "customNoData": null,
             "showTableHeading":true,
-            "showPager":true 
+            "showPager":true
         };
     },
     /* if we have a filter display the max page and results accordingly */
     setFilter: function(filter) {
-        if(filter){
-            var that = this,
-                state = {
-                    page: 0,
-                    filter: filter
-                },
-                updateAfterResultsObtained = function(updatedState) {
-                    // Update the max page.
-                    updatedState.maxPage = that.getMaxPage(updatedState.filteredResults);
-
-                    // Set the state.
-                    that.setState(updatedState);
-                };
-
-            // Obtain the state results.
-            if (this.hasExternalResults()) {
-                // Update the state with external results.
-                this.updateStateWithExternalResults(state, updateAfterResultsObtained);
-            } else {
-               state.filteredResults = _.filter(this.state.results,
-                function(item) {
-                    var arr = _.values(item);
-                    for(var i = 0; i < arr.length; i++){
-                       if ((arr[i]||"").toString().toLowerCase().indexOf(filter.toLowerCase()) >= 0){
-                        return true;
-                       }
-                    }
-
-                    return false;
-                });
-
-                // Update the state after obtaining the results.
-                updateAfterResultsObtained(state);
+        var that = this,
+        state = {
+            page: 0,
+            filter: filter
+        },
+        updateAfterResultsObtained = function(updatedState) {
+            //if filter is null or undefined reset the filter.
+            if (_.isUndefined(filter) || _.isNull(filter) || _.isEmpty(filter)){
+                updatedState.filter = filter;
+                updatedState.filteredResults = null;
             }
+
+            // Set the state.
+            that.setState(updatedState);
+        };
+
+        // Obtain the state results.
+        if (this.hasExternalResults()) {
+            // Update the state with external results.
+            this.updateStateWithExternalResults(state, updateAfterResultsObtained);
         } else {
-            this.setState({
-                filteredResults: null,
-                filter: filter,
-                maxPage: this.getMaxPage(null)
+           state.filteredResults = _.filter(this.state.results,
+            function(item) {
+                var arr = _.values(item);
+                for(var i = 0; i < arr.length; i++){
+                   if ((arr[i]||"").toString().toLowerCase().indexOf(filter.toLowerCase()) >= 0){
+                    return true;
+                   }
+                }
+
+                return false;
             });
+
+            // Update the max page.
+            state.maxPage = that.getMaxPage(state.filteredResults);
+
+            // Update the state after obtaining the results.
+            updateAfterResultsObtained(state);
         }
     },
     getExternalResults: function(state, callback) {
@@ -117,6 +116,8 @@ var Griddle = React.createClass({
             sortColumn = this.state.sortColumn;
         }
 
+        sortColumn = _.isEmpty(sortColumn) ? this.props.initialSort : sortColumn;
+
         if (state !== undefined && state.sortAscending !== undefined) {
             sortAscending = state.sortAscending;
         } else {
@@ -133,6 +134,8 @@ var Griddle = React.createClass({
         this.props.getExternalResults(filter, sortColumn, sortAscending, page, this.props.resultsPerPage, callback);
     },
     updateStateWithExternalResults: function(state, callback) {
+        var that = this;
+
         // Update the table to indicate that it's loading.
         this.setState({ isLoading: true });
 
@@ -141,7 +144,13 @@ var Griddle = React.createClass({
             // Fill the state result properties
             state.results = externalResults.results;
             state.totalResults = externalResults.totalResults;
+            state.maxPage = that.getMaxPage(externalResults.results, state.totalResults);
             state.isLoading = false;
+
+            // If the current page is larger than the max page, reset the page.
+            if (state.page >= state.maxPage) {
+                state.page = state.maxPage - 1;
+            }
 
             callback(state);
         });
@@ -152,32 +161,39 @@ var Griddle = React.createClass({
     setPageSize: function(size){
         //make this better.
         this.props.resultsPerPage = size;
-        this.setMaxPage();
+
+        if (this.hasExternalResults()) {
+            // Reload the results by setting the page.
+            this.setPage(0);
+        } else {
+            this.setMaxPage();
+        }
     },
     toggleColumnChooser: function(){
         this.setState({
-            showColumnChooser: this.state.showColumnChooser == false
+            showColumnChooser: this.state.showColumnChooser === false
         });
     },
     toggleCustomFormat: function(){
         this.setProps({
-            useCustomFormat: this.props.useCustomFormat == false
+            useCustomFormat: this.props.useCustomFormat === false
         });
     },
-    getMaxPage: function(results){
-        var totalResults;
-        if (this.hasExternalResults()) {
-            totalResults = this.state.totalResults;
-        } else {
-            totalResults = (results||this.state.results).length;
+    getMaxPage: function(results, totalResults){
+        if (!totalResults) {
+            if (this.hasExternalResults()) {
+                totalResults = this.state.totalResults;
+            } else {
+                totalResults = (results||this.state.filteredResults||this.state.results).length;
+            }
         }
         var maxPage = Math.ceil(totalResults / this.props.resultsPerPage);
         return maxPage;
     },
     setMaxPage: function(results){
-        var maxPage = this.getMaxPage();
+        var maxPage = this.getMaxPage(results);
         //re-render if we have new max page value
-        if (this.state.maxPage != maxPage){
+        if (this.state.maxPage !== maxPage){
             this.setState({ maxPage: maxPage, filteredColumns: this.props.columns });
         }
     },
@@ -199,17 +215,21 @@ var Griddle = React.createClass({
         }
     },
     getColumns: function(){
-        var that = this; 
+        var that = this;
 
         //if we don't have any data don't mess with this
-        if (this.state.results === undefined || this.state.results.length == 0){ return [];}
+        if (this.state.results === undefined || this.state.results.length === 0){ return [];}
 
         var result = this.state.filteredColumns;
 
         //if we didn't set default or filter
-        if (this.state.filteredColumns.length == 0){
+        if (this.state.filteredColumns.length === 0){
+
             var meta = [].concat(this.props.metadataColumns);
-            meta.push(this.props.childrenColumnName);
+
+            if(meta.indexOf(this.props.childrenColumnName) < 0){
+                meta.push(this.props.childrenColumnName);
+            }
             result =  _.keys(_.omit(this.state.results[0], meta));
         }
 
@@ -248,7 +268,7 @@ var Griddle = React.createClass({
 
         // If this is the same column, reverse the sort.
         if(this.state.sortColumn == sort){
-            state.sortAscending = this.state.sortAscending == false;
+            state.sortAscending = !this.state.sortAscending;
         }
 
         if (this.hasExternalResults()) {
@@ -280,8 +300,8 @@ var Griddle = React.createClass({
             filteredResults: null,
             filteredColumns: [],
             filter: "",
-            sortColumn: "",
-            sortAscending: true,
+            sortColumn: this.props.initialSort,
+            sortAscending: this.props.initialSortAscending,
             showColumnChooser: false,
             isLoading: false
         };
@@ -292,6 +312,8 @@ var Griddle = React.createClass({
         } else {
             state.isLoading = true; // Initialize to 'loading'
         }
+
+
         return state;
     },
     componentWillMount: function() {
@@ -315,12 +337,12 @@ var Griddle = React.createClass({
         var that = this;
         if (!this.hasExternalResults()) {
             //get the correct page size
-            if(this.state.sortColumn != "" || this.props.initialSort != ""){
+            if(this.state.sortColumn !== "" || this.props.initialSort !== ""){
                 data = _.sortBy(data, function(item){
                     return item[that.state.sortColumn||that.props.initialSort];
                 });
 
-                if(this.state.sortAscending == false){
+                if(this.state.sortAscending === false){
                     data.reverse();
                 }
             }
@@ -335,7 +357,9 @@ var Griddle = React.createClass({
         }
 
         var meta = [].concat(this.props.metadataColumns);
-        meta.push(this.props.childrenColumnName);
+        if (meta.indexOf(this.props.childrenColumnName) < 0){
+            meta.push(this.props.childrenColumnName);
+        }
 
         var transformedData = [];
 
@@ -388,19 +412,22 @@ var Griddle = React.createClass({
             //figure out which columns are displayed and show only those
             var data = this.getDataForRender(results, cols, true);
 
+            //don't repeat this -- it's happening in getColumns and getDataForRender too...
             var meta = this.props.metadataColumns;
-            meta.push(this.props.childrenColumnName);
+            if(meta.indexOf(this.props.childrenColumnName) < 0){
+                meta.push(this.props.childrenColumnName);
+            }
 
             // Grab the column keys from the first results
             keys = _.keys(_.omit(results[0], meta));
 
             //clean this stuff up so it's not if else all over the place.
-            resultContent = this.props.useCustomFormat 
-                ? (<CustomFormatContainer data= {data} columns={cols} metadataColumns={meta} className={this.props.customFormatClassName} customFormat={this.props.customFormat}/>)
+            resultContent = this.props.useCustomFormat ? 
+                (<CustomFormatContainer data= {data} columns={cols} metadataColumns={meta} className={this.props.customFormatClassName} customFormat={this.props.customFormat}/>)
                 : (<GridBody columnMetadata={this.props.columnMetadata} data={data} columns={cols} metadataColumns={meta} className={this.props.tableClassName}/>);
-                
-            pagingContent = this.props.useCustomPager
-                ? (<CustomPaginationContainer next={this.nextPage} previous={this.previousPage} currentPage={this.state.page} maxPage={this.state.maxPage} setPage={this.setPage} nextText={this.props.nextText} previousText={this.props.previousText} customPager={this.props.customPager}/>)
+
+            pagingContent = this.props.useCustomPager ? 
+                (<CustomPaginationContainer next={this.nextPage} previous={this.previousPage} currentPage={this.state.page} maxPage={this.state.maxPage} setPage={this.setPage} nextText={this.props.nextText} previousText={this.props.previousText} customPager={this.props.customPager}/>)
                 : (<GridPagination next={this.nextPage} previous={this.previousPage} currentPage={this.state.page} maxPage={this.state.maxPage} setPage={this.setPage} nextText={this.props.nextText} previousText={this.props.previousText}/>);
         } else {
             // Otherwise, display the loading content.
@@ -420,8 +447,8 @@ var Griddle = React.createClass({
         gridClassName += this.props.useCustomFormat ? " griddle-custom" : "";
 
 
-        var gridBody = this.props.useCustomFormat 
-            ?       <div>{resultContent}</div>
+        var gridBody = this.props.useCustomFormat ?       
+            <div>{resultContent}</div>
             :       (<div className="grid-body">
                         {this.props.showTableHeading ? <table className={headerTableClassName}>
                             <GridTitle columns={cols} changeSort={this.changeSort} sortColumn={this.state.sortColumn} sortAscending={this.state.sortAscending} columnMetadata={this.props.columnMetadata}/>
@@ -429,18 +456,20 @@ var Griddle = React.createClass({
                         {resultContent}
                         </div>);
 
-        if (typeof this.state.results === 'undefined' || this.state.results.length == 0) {        
+        if (typeof this.state.results === 'undefined' || this.state.results.length === 0) {
+            var myReturn = null; 
             if (this.props.customNoData != null) {
-                var myReturn = (<div className={gridClassName}><this.props.customNoData /></div>);
+                myReturn = (<div className={gridClassName}><this.props.customNoData /></div>);
 
-                return myReturn                
+                return myReturn
             }
 
-            var myReturn = (<div className={gridClassName}>
+            myReturn = (<div className={gridClassName}>
+                    {topSection}
                     <GridNoData noDataMessage={this.props.noDataMessage} />
                 </div>);
             return myReturn;
-                                  
+
         }
 
 

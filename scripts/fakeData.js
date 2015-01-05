@@ -55,8 +55,8 @@ var propertiesItem = [
     "description": "The number of results that should be displayed on each page. If 'getExternalResults' is defined, this value will be what's used as the 'pageSize' argument."
   },
   {
-    "property": "getExternalReports",
-    "description": "A function that obtains data to display in the grid and returns the results, along with the max total number of results. <br /> The methods requires the following parameters",
+    "property": "getExternalResults",
+    "description": "A function that obtains data to display in the grid and passes the results into a callback parameter, along with the max total number of results. The methods requires the following parameters",
     "children": [{
         "property": "filterString",
         "description": "The string that the user is filtering by."
@@ -79,7 +79,7 @@ var propertiesItem = [
       },
       {
         "property": "callback",
-        "description": "The function that the results will be passed into. <br /> The callback needs the following properties",
+        "description": "The function that the results will be passed into.  The callback needs the following properties",
         "children":[
           {
             "property": "results",
@@ -88,9 +88,9 @@ var propertiesItem = [
           {
             "property": "totalResults",
             "description": "The total number of items"
-          } 
+          }
         ]
-      }],
+      }]
 
   },
   {
@@ -144,52 +144,6 @@ var propertiesItem = [
   {
     "property": "showSettings",
     "description": "Whether or not to display the \"Settings\" section of Griddle. By default, this is set to \"false\"."
-  }
-];
-
-
-var columnMeta = [
-  {
-    "columnName": "id",
-    "order": 1,
-    "locked": false,
-    "visible": true
-  },
-  {
-    "columnName": "name",
-    "order": 2,
-    "locked": false,
-    "visible": true
-  },
-  {
-    "columnName": "city",
-    "order": 3,
-    "locked": false,
-    "visible": true
-  },  
-  {
-    "columnName": "state",
-    "order": 4,
-    "locked": false,
-    "visible": true
-  },  
-  {
-    "columnName": "country",
-    "order": 5,
-    "locked": false,
-    "visible": true
-  },  
-  {
-    "columnName": "company",
-    "order": 6,
-    "locked": false,
-    "visible": true
-  },
-  {
-    "columnName": "favoriteNumber",
-    "order":  7,
-    "locked": false,
-    "visible": true
   }
 ];
 
@@ -2688,7 +2642,7 @@ var fakeData =  [
     "state": "Hawaii",
     "country": "United Kingdom",
     "company": "Ovolo",
-    "favoriteNumber": 7, 
+    "favoriteNumber": 7,
     "children": [
         {
           "id": 273,
@@ -2822,67 +2776,25 @@ var fakeData =  [
           "company": "Intrawear",
           "favoriteNumber": 1
         }
-    ]   
+    ]
   }];
 
   var fakeDataMethod = function(filterString, sortColumn, sortAscending, page, pageSize, callback) {
+    var initialIndex = page * pageSize;
+    var endIndex = initialIndex + pageSize;
+
     setTimeout(function() {
+      var results = [], 
+          totalResults = 0;
+
+      if (filterString !== 'nothing') {
+        results = fakeData.slice(initialIndex, endIndex);
+        totalResults = fakeData.length;
+      }
+
       callback({
-        results : [{
-          "id": 64,
-          "name": "Murphy Santos",
-          "city": "Waiohinu",
-          "state": "Alaska",
-          "country": "Haiti",
-          "company": "Isodrive",
-          "favoriteNumber": 0
-        },
-        {
-          "id": 65,
-          "name": "Walls Cherry",
-          "city": "Avalon",
-          "state": "North Dakota",
-          "country": "Mozambique",
-          "company": "Bolax",
-          "favoriteNumber": 10
-        },
-        {
-          "id": 66,
-          "name": "Carney Olson",
-          "city": "Nanafalia",
-          "state": "Arkansas",
-          "country": "Pakistan",
-          "company": "Unq",
-          "favoriteNumber": 10
-        },
-        {
-          "id": 67,
-          "name": "Jennings Bowers",
-          "city": "Kenwood",
-          "state": "New Hampshire",
-          "country": "Cayman Islands",
-          "company": "Deepends",
-          "favoriteNumber": 10
-        },
-        {
-          "id": 68,
-          "name": "Browning Wooten",
-          "city": "Jessie",
-          "state": "Massachusetts",
-          "country": "Guam",
-          "company": "Eventex",
-          "favoriteNumber": 5
-        },
-        {
-          "id": 69,
-          "name": "Preston Britt",
-          "city": "Dennard",
-          "state": "Utah",
-          "country": "Cyprus",
-          "company": "Sureplex",
-          "favoriteNumber": 4
-        }],
-        totalResults: 123
+        results: results,
+        totalResults: totalResults
       });
-    }, 500);
+    }, 1000);
   }
