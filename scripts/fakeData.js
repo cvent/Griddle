@@ -43,6 +43,10 @@ var propertiesItem = [
       {
         "property": "cssClassName",
         "description" : "The css className that should be applied to this column."
+      },
+      {
+        "property": "allowSort",
+        "description": "Enable or disable sorting on this column. Default is true. [FORKED]"
       }
     ]
   },

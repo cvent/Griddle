@@ -845,6 +845,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var nodes = this.props.columns.map(function(col, index){
 	            var columnSort = "";
+	            var allowSort = true;
 
 	            if(that.props.sortColumn == col && that.props.sortAscending){
 	                columnSort = "sort-ascending"
@@ -859,6 +860,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	              if (typeof meta !== "undefined" && typeof meta.displayName !== "undefined" && meta.displayName != null) {
 	                  displayName = meta.displayName;
 	              }
+	              if(typeof meta !== "undefined" && typeof meta.allowSort !== "undefined"){
+	                allowSort = meta.allowSort;
+	              }
+	            }
+	            if(!allowSort){
+	              return (React.createElement("th", {"data-title": col, className: columnSort, key: displayName}, displayName));
 	            }
 
 	            return (React.createElement("th", {onClick: that.sort, "data-title": col, className: columnSort, key: displayName}, displayName));
