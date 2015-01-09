@@ -145,6 +145,29 @@ var columnMetaCustom = [
           "order": 5,
           "locked": false,
           "visible": true
+        },
+        {
+          "columnName": "children",
+          "customComponent": NestedGriddle,
+          "metaData": {
+            "columnMetadata": [
+              {
+                "columnName": "id",
+                "order": 1,
+                "locked": false,
+                "visible": true,
+                "allowSort" : false,
+                "customComponent": BoldFormatter
+              },
+              {
+                "columnName": "name",
+                "order": 2,
+                "locked": false,
+                "visible": true,
+                "allowSort": true
+              }
+            ]
+          }
         }
       ]
     }

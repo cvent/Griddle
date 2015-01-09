@@ -2838,7 +2838,21 @@ var fakeData =  [
           "name": "Hull Wade",
           "city": "Monument",
           "state": "Nebraska",
-          "country": "Cyprus"
+          "country": "Cyprus",
+          "children": [
+            {
+              "id": 273,
+              "name": "Hull Wade"
+            },
+            {
+              "id": 274,
+              "name": "Blanca Sheppard"
+            },
+            {
+              "id": 275,
+              "name": "Stella Luna"
+            }
+        ]
         },
         {
           "id": 274,
