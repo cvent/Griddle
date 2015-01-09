@@ -6,7 +6,13 @@ var BoldFormatter = React.createClass({
     render: function(){
         return <strong>{this.props.data}</strong>
     }
-})
+});
+
+var NestedGriddle = React.createClass({
+  render: function(){
+    return (<Griddle results={this.props.data} columnMetadata={this.props.metaData.columnMetadata} tableClassName="table" showPager={false}/>);
+  }
+});
 
 var columnMeta = [
   {
@@ -55,12 +61,6 @@ var columnMeta = [
     "visible": true
   }
 ];
-
-var NestedGriddle = React.createClass({
-  render: function(){
-    return (<Griddle results={this.props.data} columnMetadata={this.props.metaData.columnMetadata} tableClassName="table"/>);
-  }
-});
 
 var columnMetaCustom = [
   {

@@ -51,6 +51,10 @@ var propertiesItem = [
       {
         "property": "customComponent",
         "description": "Renders the custom cell component"
+      },
+      {
+        "property": "metaData",
+        "description": "meta data used when rendering custom component for sub grids. anything defined here is just passed through to the custom component with a prop metaData"
       }
     ]
   },
