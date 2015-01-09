@@ -14,7 +14,8 @@ var columnMeta = [
     "order": 1,
     "locked": false,
     "visible": true,
-    "allowSort" : false
+    "allowSort" : false,
+    "customComponent": BoldFormatter
   },
   {
     "columnName": "name",
@@ -52,6 +53,101 @@ var columnMeta = [
     "order":  7,
     "locked": false,
     "visible": true
+  }
+];
+
+var NestedGriddle = React.createClass({
+  render: function(){
+    return (<Griddle results={this.props.data} columnMetadata={this.props.metaData.columnMetadata} tableClassName="table"/>);
+  }
+});
+
+var columnMetaCustom = [
+  {
+    "columnName": "id",
+    "order": 1,
+    "locked": false,
+    "visible": true,
+    "allowSort" : false,
+    "customComponent": BoldFormatter
+  },
+  {
+    "columnName": "name",
+    "order": 2,
+    "locked": false,
+    "visible": true,
+    "allowSort": true
+  },
+  {
+    "columnName": "city",
+    "order": 3,
+    "locked": false,
+    "visible": true
+  },
+  {
+    "columnName": "state",
+    "order": 4,
+    "locked": false,
+    "visible": true
+  },
+  {
+    "columnName": "country",
+    "order": 5,
+    "locked": false,
+    "visible": true
+  },
+  {
+    "columnName": "company",
+    "order": 6,
+    "locked": false,
+    "visible": true
+  },
+  {
+    "columnName": "favoriteNumber",
+    "order":  7,
+    "locked": false,
+    "visible": true
+  },
+  {
+    "columnName": "children",
+    "customComponent": NestedGriddle,
+    "metaData": {
+      "columnMetadata": [
+        {
+          "columnName": "id",
+          "order": 1,
+          "locked": false,
+          "visible": true,
+          "allowSort" : false,
+          "customComponent": BoldFormatter
+        },
+        {
+          "columnName": "name",
+          "order": 2,
+          "locked": false,
+          "visible": true,
+          "allowSort": true
+        },
+        {
+          "columnName": "city",
+          "order": 3,
+          "locked": false,
+          "visible": true
+        },
+        {
+          "columnName": "state",
+          "order": 4,
+          "locked": false,
+          "visible": true
+        },
+        {
+          "columnName": "country",
+          "order": 5,
+          "locked": false,
+          "visible": true
+        }
+      ]
+    }
   }
 ];
 
@@ -185,6 +281,10 @@ React.render(
 );
 
 React.render(
+        <Griddle results={fakeSubgridDataCustom} columnMetadata={columnMetaCustom} tableClassName="table"  />, document.getElementById('subgrid-custom')
+);
+
+React.render(
         <TestComponent simple={false} external={true}/>, document.getElementById('externaldata')
 );
 
@@ -198,3 +298,5 @@ React.render(
 React.render(
     <Griddle results={propertiesItem} showFilter={true} tableClassName="table" resultsPerPage={100} columnMetadata={propertyGridMeta} />, document.getElementById('properties-grid')
 );
+
+

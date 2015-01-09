@@ -132,6 +132,15 @@ var Griddle = require('griddle-react');</pre></code>
 			</div>
 		</section>
 
+    <section id="example7">
+      <div class="container">
+        <h2>Advanced Subgrids</h2>
+        <p>You can add a custom component to render the sub grid. You need to add a columnName "children" to your columnMetadata and add a customComponent and some metaData. the custom component will be called with data and metaData. "metaData" will have the information you described in the metaData property of the column "children" and data will be the stuff you want to render.</p>
+        <hr />
+        <div id="subgrid-custom"></div>
+      </div>
+    </section>
+
 		<section id="example4">
 			<div class="container">
 				<h2>External Data</h2>
@@ -286,6 +295,7 @@ var Griddle = require('griddle-react');</pre></code>
                 </div>
             </div>
 	    </section>
+      
 		<section id="properties">
 					<div class="container">
 						<h2>Property Reference</h2>

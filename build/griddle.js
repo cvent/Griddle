@@ -1044,17 +1044,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	          hasChildren: that.props.hasChildren, toggleChildren: that.toggleChildren, showChildren: that.state.showChildren, key: that.props.uniqueId}));
 	          var children = null;
 	        if(that.state.showChildren){
-	            children =  that.props.hasChildren && this.props.data["children"].map(function(row, index){
-	                if(typeof row["children"] !== "undefined"){
-	                  return (React.createElement("tr", null, React.createElement("td", {colSpan: Object.keys(that.props.data).length - that.props.metadataColumns.length, className: "griddle-parent"}, 
-	                      React.createElement(Griddle, {results: [row], tableClassName: that.props.tableClassName, showTableHeading: false, showPager: false, columnMetadata: that.props.columnMetadata})
-	                    )));
-	                }
+	            var meta = _.findWhere(that.props.columnMetadata, {columnName: "children"});
+	            if (typeof meta !== "undefined" && typeof meta.customComponent !== 'undefined' && typeof meta.metaData !== 'undefined'){
+	                children = (React.createElement("tr", null, React.createElement("td", {colSpan: Object.keys(that.props.data).length - that.props.metadataColumns.length, className: "griddle-parent"}, 
+	                          React.createElement(meta.customComponent, {data: this.props.data["children"], metaData: meta.metaData})
+	                        )));
+	            }
+	            else{
+	              children =  that.props.hasChildren && this.props.data["children"].map(function(row, index){
+	                  if(typeof row["children"] !== "undefined"){
+	                    return (React.createElement("tr", null, React.createElement("td", {colSpan: Object.keys(that.props.data).length - that.props.metadataColumns.length, className: "griddle-parent"}, 
+	                        React.createElement(Griddle, {results: [row], tableClassName: that.props.tableClassName, showTableHeading: false, showPager: false, columnMetadata: that.props.columnMetadata})
+	                      )));
+	                  }
 
-	                return React.createElement(GridRow, {data: row, metadataColumns: that.props.metadataColumns, isChildRow: true, columnMetadata: that.props.columnMetadata, key: _.uniqueId("grid_row")})
-	            });
-
-
+	                  return React.createElement(GridRow, {data: row, metadataColumns: that.props.metadataColumns, isChildRow: true, columnMetadata: that.props.columnMetadata, key: _.uniqueId("grid_row")})
+	              });
+	            }
 	        }
 
 	        return that.props.hasChildren === false ? arr[0] : React.createElement("tbody", null, that.state.showChildren ? arr.concat(children) : arr)
