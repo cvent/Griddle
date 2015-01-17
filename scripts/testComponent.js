@@ -13,13 +13,15 @@ var columnMeta = [
     "columnName": "id",
     "order": 1,
     "locked": false,
-    "visible": true
+    "visible": true,
+    "allowSort" : false
   },
   {
     "columnName": "name",
     "order": 2,
     "locked": false,
-    "visible": true
+    "visible": true,
+    "allowSort": true
   },
   {
     "columnName": "city",

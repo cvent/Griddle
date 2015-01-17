@@ -32,6 +32,7 @@ var GridTitle = React.createClass({
 
         var nodes = this.props.columns.map(function(col, index){
             var columnSort = "";
+            var allowSort = true;
 
             if(that.props.sortColumn == col && that.props.sortAscending){
                 columnSort = "sort-ascending"
@@ -46,6 +47,12 @@ var GridTitle = React.createClass({
               if (typeof meta !== "undefined" && typeof meta.displayName !== "undefined" && meta.displayName != null) {
                   displayName = meta.displayName;
               }
+              if(typeof meta !== "undefined" && typeof meta.allowSort !== "undefined"){
+                allowSort = meta.allowSort;
+              }
+            }
+            if(!allowSort){
+              return (<th data-title={col} className={columnSort} key={displayName}>{displayName}</th>);
             }
 
             return (<th onClick={that.sort} data-title={col} className={columnSort} key={displayName}>{displayName}</th>);
