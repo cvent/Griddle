@@ -47,6 +47,14 @@ var propertiesItem = [
       {
         "property": "allowSort",
         "description": "Enable or disable sorting on this column. Default is true. [FORKED]"
+      },
+      {
+        "property": "customComponent",
+        "description": "Renders the custom cell component"
+      },
+      {
+        "property": "metaData",
+        "description": "meta data used when rendering custom component for sub grids. anything defined here is just passed through to the custom component with a prop metaData"
       }
     ]
   },
@@ -2779,6 +2787,118 @@ var fakeData =  [
           "country": "Czech Republic",
           "company": "Intrawear",
           "favoriteNumber": 1
+        }
+    ]
+  }];
+
+  var fakeSubgridDataCustom =  [
+  {
+    "id": 0,
+    "name": "Mayer Leonard",
+    "city": "Kapowsin",
+    "state": "Hawaii",
+    "country": "United Kingdom",
+    "company": "Ovolo",
+    "favoriteNumber": 7,
+    "children": [
+        {
+          "id": 273,
+          "name": "Hull Wade",
+          "city": "Monument",
+          "state": "Nebraska",
+          "country": "Cyprus"
+        },
+        {
+          "id": 274,
+          "name": "Blanca Sheppard",
+          "city": "Wadsworth",
+          "state": "West Virginia",
+          "country": "Nicaragua"
+        },
+        {
+          "id": 275,
+          "name": "Stella Luna",
+          "city": "Dubois",
+          "state": "Oregon",
+          "country": "Czech Republic"
+        }
+    ]
+  },
+  {
+    "id": 1,
+    "name": "Koch Becker",
+    "city": "Johnsonburg",
+    "state": "New Jersey",
+    "country": "Madagascar",
+    "company": "Eventage",
+    "favoriteNumber": 2,
+    "children": [
+        {
+          "id": 273,
+          "name": "Hull Wade",
+          "city": "Monument",
+          "state": "Nebraska",
+          "country": "Cyprus",
+          "children": [
+            {
+              "id": 273,
+              "name": "Hull Wade"
+            },
+            {
+              "id": 274,
+              "name": "Blanca Sheppard"
+            },
+            {
+              "id": 275,
+              "name": "Stella Luna"
+            }
+        ]
+        },
+        {
+          "id": 274,
+          "name": "Blanca Sheppard",
+          "city": "Wadsworth",
+          "state": "West Virginia",
+          "country": "Nicaragua"
+        },
+        {
+          "id": 275,
+          "name": "Stella Luna",
+          "city": "Dubois",
+          "state": "Oregon",
+          "country": "Czech Republic"
+        }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Lowery Hopkins",
+    "city": "Blanco",
+    "state": "Arizona",
+    "country": "Ukraine",
+    "company": "Comtext",
+    "favoriteNumber": 3,
+     "children": [
+        {
+          "id": 273,
+          "name": "Hull Wade",
+          "city": "Monument",
+          "state": "Nebraska",
+          "country": "Cyprus"
+        },
+        {
+          "id": 274,
+          "name": "Blanca Sheppard",
+          "city": "Wadsworth",
+          "state": "West Virginia",
+          "country": "Nicaragua"
+        },
+        {
+          "id": 275,
+          "name": "Stella Luna",
+          "city": "Dubois",
+          "state": "Oregon",
+          "country": "Czech Republic"
         }
     ]
   }];

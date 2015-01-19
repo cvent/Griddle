@@ -34,17 +34,23 @@ var GridRowContainer = React.createClass({
           hasChildren={that.props.hasChildren} toggleChildren={that.toggleChildren} showChildren={that.state.showChildren} key={that.props.uniqueId}/>);
           var children = null;
         if(that.state.showChildren){
-            children =  that.props.hasChildren && this.props.data["children"].map(function(row, index){
-                if(typeof row["children"] !== "undefined"){
-                  return (<tr><td colSpan={Object.keys(that.props.data).length - that.props.metadataColumns.length} className="griddle-parent">
-                      <Griddle results={[row]} tableClassName={that.props.tableClassName} showTableHeading={false} showPager={false} columnMetadata={that.props.columnMetadata}/>
-                    </td></tr>);
-                }
+            var meta = _.findWhere(that.props.columnMetadata, {columnName: "children"});
+            if (typeof meta !== "undefined" && typeof meta.customComponent !== 'undefined' && typeof meta.metaData !== 'undefined'){
+                children = (<tr><td colSpan={Object.keys(that.props.data).length - that.props.metadataColumns.length} className="griddle-parent">
+                          <meta.customComponent data={this.props.data["children"]} metaData={meta.metaData} />
+                        </td></tr>);
+            }
+            else{
+              children =  that.props.hasChildren && this.props.data["children"].map(function(row, index){
+                  if(typeof row["children"] !== "undefined"){
+                    return (<tr><td colSpan={Object.keys(that.props.data).length - that.props.metadataColumns.length} className="griddle-parent">
+                        <Griddle results={[row]} tableClassName={that.props.tableClassName} showTableHeading={false} showPager={false} columnMetadata={that.props.columnMetadata}/>
+                      </td></tr>);
+                  }
 
-                return <GridRow data={row} metadataColumns={that.props.metadataColumns} isChildRow={true} columnMetadata={that.props.columnMetadata} key={_.uniqueId("grid_row")}/>
-            });
-
-
+                  return <GridRow data={row} metadataColumns={that.props.metadataColumns} isChildRow={true} columnMetadata={that.props.columnMetadata} key={_.uniqueId("grid_row")}/>
+              });
+            }
         }
 
         return that.props.hasChildren === false ? arr[0] : <tbody>{that.state.showChildren ? arr.concat(children) : arr}</tbody>
